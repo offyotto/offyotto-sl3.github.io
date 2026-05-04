@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Where Did My Disk Space Go? for macOS</title>
+  <meta name="description" content="A private macOS utility for finding large files, old downloads, developer caches, build artifacts, and duplicates on your Mac.">
+  <link rel="canonical" href="https://offyotto-sl3.github.io/where-did-my-disk-space-go/">
+  <meta property="og:title" content="Where Did My Disk Space Go?">
+  <meta property="og:description" content="Find storage-heavy files and caches on your Mac without sending scan results off device.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://offyotto-sl3.github.io/where-did-my-disk-space-go/">
+  <style>
+    :root { color-scheme: light; --ink: #172033; --muted: #5a6477; --line: #d8dde7; --paper: #f7f8fb; --panel: #ffffff; --green: #1e7f5c; --blue: #2563eb; --amber: #a15c00; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.5; }
+    a { color: var(--blue); }
+    header { position: sticky; top: 0; z-index: 10; background: rgba(247, 248, 251, 0.92); border-bottom: 1px solid var(--line); backdrop-filter: blur(16px); }
+    nav { max-width: 1120px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--ink); text-decoration: none; }
+    .mark { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid #c7d2fe; border-radius: 7px; background: #eef2ff; color: var(--blue); font-weight: 800; }
+    .links { display: flex; align-items: center; gap: 18px; font-size: 14px; }
+    .links a { color: var(--muted); text-decoration: none; }
+    .hero { max-width: 1120px; margin: 0 auto; padding: 72px 24px 40px; display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr); gap: 54px; align-items: center; }
+    h1 { margin: 0; max-width: 700px; font-size: clamp(40px, 6vw, 74px); line-height: 0.98; letter-spacing: 0; }
+    .lede { max-width: 620px; margin: 22px 0 0; color: var(--muted); font-size: 20px; }
+    .actions { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 12px; }
+    .button { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--ink); font-weight: 650; text-decoration: none; }
+    .button.primary { border-color: #1d4ed8; background: var(--blue); color: white; }
+    .note { margin-top: 18px; color: var(--muted); font-size: 14px; }
+    .app-window { border: 1px solid #cfd6e3; border-radius: 8px; overflow: hidden; background: var(--panel); box-shadow: 0 24px 80px rgba(31, 41, 55, 0.18); }
+    .titlebar { height: 42px; display: flex; align-items: center; gap: 7px; padding: 0 14px; background: #edf0f6; border-bottom: 1px solid var(--line); }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .red { background: #ff5f57; } .yellow { background: #febc2e; } .green { background: #28c840; }
+    .mock-body { display: grid; grid-template-columns: 190px 1fr; min-height: 410px; }
+    .sidebar { padding: 20px 16px; background: #f1f4f9; border-right: 1px solid var(--line); }
+    .meter { height: 10px; margin: 14px 0 20px; border-radius: 999px; background: linear-gradient(90deg, var(--green) 0 44%, var(--amber) 44% 78%, #e5e7eb 78%); }
+    .side-item { height: 34px; margin-bottom: 8px; padding: 8px 10px; border-radius: 6px; color: #4b5563; font-size: 13px; }
+    .side-item.active { background: #dbeafe; color: #1d4ed8; font-weight: 700; }
+    .content { padding: 22px; }
+    .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+    .stat, .row { border: 1px solid var(--line); border-radius: 7px; background: var(--panel); }
+    .stat { padding: 14px; }
+    .stat strong { display: block; margin-top: 6px; font-size: 20px; }
+    .rows { display: grid; gap: 10px; }
+    .row { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; padding: 13px 14px; }
+    .bar { height: 8px; margin-top: 8px; border-radius: 999px; background: #e5e7eb; overflow: hidden; }
+    .fill { display: block; height: 100%; background: var(--green); }
+    section { max-width: 1120px; margin: 0 auto; padding: 48px 24px; }
+    h2 { margin: 0 0 18px; font-size: 34px; letter-spacing: 0; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card { padding: 22px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+    .card h3 { margin: 0 0 8px; font-size: 18px; }
+    .card p, .checklist p { margin: 0; color: var(--muted); }
+    .checklist { display: grid; gap: 10px; padding: 24px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+    .check { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+    .tick { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: #dcfce7; color: var(--green); font-size: 14px; font-weight: 900; }
+    footer { border-top: 1px solid var(--line); padding: 28px 24px; color: var(--muted); font-size: 14px; }
+    footer .inner { max-width: 1120px; margin: 0 auto; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    @media (max-width: 860px) { nav { align-items: flex-start; flex-direction: column; } .hero { grid-template-columns: 1fr; padding-top: 44px; } .mock-body { grid-template-columns: 1fr; } .sidebar { display: none; } .grid, .summary { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header><nav aria-label="Main navigation"><a class="brand" href="https://offyotto-sl3.github.io/where-did-my-disk-space-go/" aria-label="Where Did My Disk Space Go? home"><span class="mark">D</span><span>Where Did My Disk Space Go?</span></a><div class="links"><a href="#features">Features</a><a href="#privacy">Privacy</a><a href="privacy.html">Privacy Policy</a><a href="support.html">Support</a></div></nav></header>
+  <main>
+    <section class="hero"><div><h1>Where Did My Disk Space Go?</h1><p class="lede">A focused macOS utility that helps you find large files, old downloads, developer caches, build artifacts, and duplicates without sending scan results off your Mac.</p><div class="actions"><a class="button primary" href="https://apps.apple.com/" aria-label="Open the App Store listing when available">App Store listing coming soon</a><a class="button" href="support.html">Get support</a></div><p class="note">Built for macOS 14 or later. Cleanup uses the Trash so removed items remain recoverable until you empty it.</p></div><div class="app-window" aria-label="Preview of the app interface"><div class="titlebar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="mock-body"><aside class="sidebar"><strong>Macintosh HD</strong><div class="meter"></div><div class="side-item active">Dashboard</div><div class="side-item">Developer Caches</div><div class="side-item">Old Downloads</div><div class="side-item">Duplicates</div></aside><div class="content"><div class="summary"><div class="stat">Used<strong>342 GB</strong></div><div class="stat">Free<strong>152 GB</strong></div><div class="stat">Found<strong>41 GB</strong></div></div><div class="rows"><div class="row"><span>DerivedData and archives <span class="bar"><span class="fill" style="width: 82%"></span></span></span><strong>18.4 GB</strong></div><div class="row"><span>Old downloads <span class="bar"><span class="fill" style="width: 58%"></span></span></span><strong>12.1 GB</strong></div><div class="row"><span>Large media <span class="bar"><span class="fill" style="width: 44%"></span></span></span><strong>7.8 GB</strong></div><div class="row"><span>Package caches <span class="bar"><span class="fill" style="width: 28%"></span></span></span><strong>3.0 GB</strong></div></div></div></div></div></section>
+    <section id="features"><h2>Find the storage you can actually act on.</h2><div class="grid"><article class="card"><h3>Developer cleanup targets</h3><p>Review Xcode DerivedData, archives, simulator data, SwiftPM caches, node_modules folders, and common package-manager caches.</p></article><article class="card"><h3>Local file review</h3><p>Spot older downloads and large media files in familiar folders, then reveal items in Finder before deciding what to do.</p></article><article class="card"><h3>Recoverable cleanup</h3><p>Selected items are moved to Trash. The app does not permanently erase files as part of its normal cleanup workflow.</p></article></div></section>
+    <section id="privacy"><h2>Private by design.</h2><div class="checklist"><div class="check"><span class="tick">✓</span><p>Scans are processed on your Mac. File names, paths, disk usage, and duplicate results are not uploaded by the app.</p></div><div class="check"><span class="tick">✓</span><p>No account, advertising SDK, analytics SDK, or tracking domain is used by the app.</p></div><div class="check"><span class="tick">✓</span><p>Folder access is requested only so the app can display local disk usage and cleanup suggestions.</p></div><div class="check"><span class="tick">✓</span><p>The app declares its disk-space and file-timestamp API usage in its Apple privacy manifest.</p></div></div></section>
+  </main>
+  <footer><div class="inner"><span>Copyright 2026. Where Did My Disk Space Go?</span><span><a href="privacy.html">Privacy Policy</a> · <a href="support.html">Support</a></span></div></footer>
+</body>
+</html>
