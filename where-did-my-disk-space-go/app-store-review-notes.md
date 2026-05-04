@@ -2,11 +2,11 @@
 
 App name: Where Did My Disk Space Go?
 
-Website URL: https://offyotto-sl3.github.io/where-did-my-disk-space-go/
+Website URL: https://offyotto.github.io/offyotto-sl3.github.io/where-did-my-disk-space-go/
 
-Privacy Policy URL: https://offyotto-sl3.github.io/where-did-my-disk-space-go/privacy.html
+Privacy Policy URL: https://offyotto.github.io/offyotto-sl3.github.io/where-did-my-disk-space-go/privacy.html
 
-Support URL: https://offyotto-sl3.github.io/where-did-my-disk-space-go/support.html
+Support URL: https://offyotto.github.io/offyotto-sl3.github.io/where-did-my-disk-space-go/support.html
 
 ## Review Summary
 
